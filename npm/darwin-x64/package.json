@@ -1,0 +1,14 @@
+{
+    "name": "@mgeist/libuv-monitor-darwin-x64",
+    "version": "0.0.1",
+    "os": [
+        "darwin"
+    ],
+    "cpu": [
+        "x64"
+    ],
+    "main": "libuv-monitor.darwin-x64.node",
+    "files": [
+        "libuv-monitor.darwin-x64.node"
+    ]
+}

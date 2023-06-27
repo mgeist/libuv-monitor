@@ -1,0 +1,15 @@
+{
+    "name": "@mgeist/libuv-monitor-darwin-arm64",
+    "version": "0.0.1",
+    "os": [
+        "darwin"
+    ],
+    "cpu": [
+        "arm64"
+    ],
+    "main": "libuv-monitor.darwin-arm64.node",
+    "files": [
+        "libuv-monitor.darwin-arm64.node"
+    ]
+}
+

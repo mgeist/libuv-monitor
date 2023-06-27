@@ -1,0 +1,95 @@
+name: libuv-monitor
+
+on:
+  push:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        target:
+          - darwin-arm64
+          - darwin-x64
+          - linux-arm64
+          - linux-x64
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          # This should always be the current NodeJS LTS release.
+          node-version: 18
+
+      - name: Setup Zig
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: 0.10.1
+
+      - run: npm run build:${{ matrix.target }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: libuv-monitor.${{ matrix.target }}.node
+          path: npm/${{ matrix.target }}/*.node
+
+  test:
+    needs:
+      - build
+    strategy:
+      fail-fast: false
+      matrix:
+        # This should only contain NodeJS LTS versions that are maintaince, active or current.
+        # Not convinced we want to support earlier than the current LTS release yet, though.
+        node-version: 
+          - 14
+          - 16
+          - 18
+          - 20
+
+        builds:
+          - target: darwin-x64
+            host: macos-latest
+
+          - target: linux-x64
+            host: ubuntu-latest
+
+          - target: linux-arm64
+            host: ubuntu-latest
+            docker: arm64v8/node
+            platform: linux/arm64
+
+    runs-on: ${{ matrix.builds.host }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: libuv-monitor.${{ matrix.builds.target }}.node
+          path: npm/${{ matrix.builds.target }}
+
+      - name: NodeJS Version ${{ matrix.node-version }}
+        if: ${{ !matrix.builds.docker }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - if: ${{ !matrix.builds.docker }}
+        run: npm run test:ci
+
+      - name: Set up QEMU for Docker
+        if: ${{ matrix.builds.docker }}
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+      - if: ${{ matrix.builds.docker }}
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ matrix.builds.docker }}:${{ matrix.node-version }}
+          options: --platform ${{ matrix.builds.platform }} --volume ${{ github.workspace }}:/work --workdir /work
+          run: |
+            set -e
+            npm run test:ci

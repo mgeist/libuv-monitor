@@ -1,0 +1,28 @@
+{
+  "name": "libuv-monitor",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "license": "",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "include": "realpath \"$(dirname $(which node))/../include/node\"",
+    "build": "zig build-lib -dynamic -fallow-shlib-undefined -OReleaseSmall -isystem $(npm run --silent include) -femit-bin=libuv-monitor.node src/main.zig --verbose-link",
+    "build:darwin-arm64": "npm run build -- -target aarch64-macos && mv libuv-monitor.node npm/darwin-arm64/libuv-monitor.darwin-arm64.node",
+    "build:darwin-x64": "npm run build -- -target x86_64-macos && mv libuv-monitor.node npm/darwin-x64/libuv-monitor.darwin-x64.node",
+    "build:linux-arm64": "npm run build -- -target aarch64-linux && mv libuv-monitor.node npm/linux-arm64/libuv-monitor.linux-arm64.node",
+    "build:linux-x64": "npm run build -- -target x86_64-linux && mv libuv-monitor.node npm/linux-x64/libuv-monitor.linux-x64.node",
+    "test": "npm run build && npm run test:ci",
+    "test:ci": "node ./test.js"
+  },
+  "optionalDependencies": {
+      "@mgeist/libuv-monitor-darwin-arm64": "0.0.1",
+      "@mgeist/libuv-monitor-darwin-x64": "0.0.1",
+      "@mgeist/libuv-monitor-linux-x64": "0.0.1",
+      "@mgeist/libuv-monitor-linux-arm64": "0.0.1"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "name": "@mgeist/libuv-monitor-linux-x64",
+    "version": "0.0.1",
+    "os": [
+        "linux"
+    ],
+    "cpu": [
+        "x64"
+    ],
+    "main": "libuv-monitor.linux-x64.node",
+    "files": [
+        "libuv-monitor.linux-x64.node"
+    ]
+}
+
+
+
