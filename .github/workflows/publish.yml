@@ -14,6 +14,14 @@ jobs:
     needs:
       - build-and-test
 
+    strategy:
+      matrix:
+        target:
+          - darwin-arm64
+          - darwin-x64
+          - linux-arm64
+          - linux-x64
+
     steps:
       - uses: actions/checkout@v3
 
@@ -26,7 +34,8 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v3
         with:
-          path: artifacts/${{ matrix.builds.target }}
+          name: libuv-monitor.${{ matrix.target }}.node
+          path: npm/${{ matrix.target }}/
 
       - name: List Packages
         run: ls -R .
