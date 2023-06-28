@@ -1,7 +1,7 @@
 name: libuv-monitor
 
 on:
-  # push:
+  push:
   workflow_call:
 
 jobs:

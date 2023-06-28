@@ -2,7 +2,6 @@ name: Publish NPM Packages
 
 on:
   workflow_dispatch:
-  push:
 
 jobs:
   build-and-test:
