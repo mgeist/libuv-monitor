@@ -8,8 +8,8 @@ jobs:
   build-and-test:
     uses: ./.github/workflows/ci.yml
 
-  publish:
-    name: Publish
+  publish-platform-packages:
+    name: Publish Platform Specific Packge
     runs-on: ubuntu-latest
     needs:
       - build-and-test
@@ -35,7 +35,33 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: libuv-monitor.${{ matrix.target }}.node
-          path: npm/${{ matrix.target }}/
+          path: npm/${{ matrix.target }}
 
       - name: List Packages
         run: ls -R .
+
+      - name: Publish Platform Specific Package
+        run: |
+          cd npm/${{ matrix.target }}
+          npm publish --dry-run
+
+  publish:
+    name: Publish Package
+    runs-on: ubuntu-latest
+    needs:
+      - publish-platform-packages
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          # This should always be the current NodeJS LTS release.
+          node-version: 18
+
+      - name: List Packages
+        run: ls -R .
+
+      - name: Publish Platform Specific Package
+        run: npm publish --dry-run
