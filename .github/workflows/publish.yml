@@ -34,7 +34,7 @@ jobs:
         with:
           # This should always be the current NodeJS LTS release.
           node-version: 18
-          registry: 'https://registry.npmjs.org'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Download Artifacts
         uses: actions/download-artifact@v3
@@ -65,7 +65,7 @@ jobs:
         with:
           # This should always be the current NodeJS LTS release.
           node-version: 18
-          registry: 'https://registry.npmjs.org'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: List Packages
         run: ls -R .
