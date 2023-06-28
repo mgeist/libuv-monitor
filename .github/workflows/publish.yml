@@ -63,5 +63,5 @@ jobs:
       - name: List Packages
         run: ls -R .
 
-      - name: Publish Platform Specific Package
+      - name: Publish Package
         run: npm publish --dry-run
