@@ -1,7 +1,6 @@
 const fs = require("node:fs")
 const path = require("node:path")
 
-
 const unsupportedError = new Error("Unsupported system")
 
 function getTargetString() {
@@ -38,21 +37,18 @@ function getPackage(target) {
     return `libuv-monitor-${target}`
 }
 
-function getBinary(target) {
-    return `libuv-monitor.${target}.node`
-}
-
 function devBinary() {
     return path.join(__dirname, 'libuv-monitor.node')
 }
 
 function localPath(target) {
-    return path.join(__dirname, `npm/${target}/${getBinary(target)}`)
+    return path.join(__dirname, `npm/${target}/libuv-monitor.${target}.node`)
 }
 
 function hasDevBinary() {
     return fs.existsSync(devBinary())
 }
+
 function hasLocalBinary(target) {
     return fs.existsSync(localPath(target))
 }
