@@ -86,6 +86,10 @@ jobs:
       - if: ${{ !matrix.builds.docker }}
         run: npm run test:ci
 
+      - name: Setup Docker for macOS
+        if: ${{ contains(matrix.builds.target, 'darwin') && matrix.builds.docker }}
+        uses: docker-practice/actions-setup-docker@v1
+
       - name: Set up QEMU for Docker
         if: ${{ matrix.builds.docker }}
         run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
