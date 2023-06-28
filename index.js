@@ -62,7 +62,7 @@ if (hasDevBinary()) {
 } else if (hasLocalBinary(target)) {
     nativeBinding = require(localPath(target))
 } else {
-    nativeBinding = require(`@mgeist/${getPackage(package)}`)
+    nativeBinding = require(`@mgeist/${getPackage(target)}`)
 }
 
 if (!nativeBinding) {
