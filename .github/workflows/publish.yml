@@ -30,6 +30,7 @@ jobs:
         with:
           # This should always be the current NodeJS LTS release.
           node-version: 18
+          registry: 'https://registry.npmjs.org'
 
       - name: Download Artifacts
         uses: actions/download-artifact@v3
@@ -41,9 +42,11 @@ jobs:
         run: ls -R .
 
       - name: Publish Platform Specific Package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
         run: |
           cd npm/${{ matrix.target }}
-          npm publish --dry-run
+          npm publish --access public
 
   publish:
     name: Publish Package
@@ -59,9 +62,12 @@ jobs:
         with:
           # This should always be the current NodeJS LTS release.
           node-version: 18
+          registry: 'https://registry.npmjs.org'
 
       - name: List Packages
         run: ls -R .
 
       - name: Publish Package
-        run: npm publish --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+        run: npm publish --access public
