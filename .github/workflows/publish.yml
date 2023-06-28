@@ -22,6 +22,10 @@ jobs:
           - linux-arm64
           - linux-x64
 
+    defaults:
+      run:
+        working-directory: npm/${{ matrix.target }}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -45,8 +49,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
         run: |
-          cd npm/${{ matrix.target }}
-          npm publish --access public
+          npm publish --access public --dry-run
 
   publish:
     name: Publish Package
@@ -70,4 +73,4 @@ jobs:
       - name: Publish Package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
-        run: npm publish --access public
+        run: npm publish --access public --dry-run
