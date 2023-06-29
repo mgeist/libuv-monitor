@@ -2,6 +2,10 @@ const crypto = require("node:crypto")
 
 const libuv_monitor = require('./index')
 
+if (!libuv_monitor.isActive()) {
+    throw new Error("Unexpected unsupported platform")
+}
+
 libuv_monitor.hi();
 
 const JOBS = 100

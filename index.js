@@ -1,39 +1,22 @@
 const fs = require("node:fs")
 const path = require("node:path")
 
-const unsupportedError = new Error("Unsupported system")
+const supportedPlatforms = [
+    'darwin-arm64',
+    'darwin-x64',
+    'linux-arm64',
+    'linux-x64'
+]
 
-function getTargetString() {
-    let os = null
-    let arch = null
-
-    switch (process.platform) {
-        case 'darwin':
-            os = 'darwin'
-            break
-        case 'linux':
-            os = 'linux'
-            break
-    }
-
-    switch (process.arch) {
-        case 'x64':
-            arch = 'x64'
-            break
-        case 'arm64':
-            arch = 'arm64'
-            break
-    }
-
-    if (os == null || arch == null) {
-        throw unsupportedError
-    }
-
-    return `${os}-${arch}`
-
+function platformSupported() {
+    return supportedPlatforms.includes(getTargetString())
 }
 
-function getPackage(target) {
+function getTargetString() {
+    return `${process.platform}-${process.arch}`
+}
+
+function getPackageName(target) {
     return `libuv-monitor-${target}`
 }
 
@@ -41,7 +24,7 @@ function devBinary() {
     return path.join(__dirname, 'libuv-monitor.node')
 }
 
-function localPath(target) {
+function localBinary(target) {
     return path.join(__dirname, `npm/${target}/libuv-monitor.${target}.node`)
 }
 
@@ -50,24 +33,34 @@ function hasDevBinary() {
 }
 
 function hasLocalBinary(target) {
-    return fs.existsSync(localPath(target))
+    return fs.existsSync(localBinary(target))
 }
 
 let target = getTargetString()
 
-let nativeBinding = null
+// Export the native functions if the platform is supported, otherwise, export stub
+// functions to allow usage within applications that run on a wider variety of platforms
+// than this library supports without crashing.
+if (platformSupported()) {
+    let nativeBinding = null
 
-if (hasDevBinary()) {
-    nativeBinding = require(devBinary())
-} else if (hasLocalBinary(target)) {
-    nativeBinding = require(localPath(target))
+    if (hasDevBinary()) {
+        nativeBinding = require(devBinary())
+    } else if (hasLocalBinary(target)) {
+        nativeBinding = require(localBinary(target))
+    } else {
+        nativeBinding = require(`@mgeist/${getPackageName(target)}`)
+    }
+
+    if (!nativeBinding) {
+        throw new Error("Failed to load binary")
+    }
+
+    module.exports.hi = nativeBinding.hi
+    module.exports.getActiveReqs = nativeBinding.getActiveReqs
 } else {
-    nativeBinding = require(`@mgeist/${getPackage(target)}`)
+    module.exports.hi = () => {}
+    module.exports.getActiveReqs = () => 0
 }
 
-if (!nativeBinding) {
-    throw new Error("Failed to load binary")
-}
-
-module.exports.hi = nativeBinding.hi
-module.exports.getActiveReqs = nativeBinding.getActiveReqs
+module.exports.isActive = platformSupported
