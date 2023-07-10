@@ -16,10 +16,6 @@ function getTargetString() {
     return `${process.platform}-${process.arch}`
 }
 
-function getPackageName(target) {
-    return `libuv-monitor-${target}`
-}
-
 function devBinary() {
     return path.join(__dirname, 'libuv-monitor.node')
 }
@@ -48,8 +44,14 @@ if (platformSupported()) {
         nativeBinding = require(devBinary())
     } else if (hasLocalBinary(target)) {
         nativeBinding = require(localBinary(target))
-    } else {
-        nativeBinding = require(`@mgeist/${getPackageName(target)}`)
+    } else if (process.platform == 'darwin' && process.arch == 'arm64') {
+        nativeBinding = require('@mgeist/libuv-monitor-darwin-arm64')
+    } else if (process.platform == 'darwin' && process.arch == 'x64') {
+        nativeBinding = require('@mgeist/libuv-monitor-darwin-x64')
+    } else if (process.platform == 'linux' && process.arch == 'arm64') {
+        nativeBinding = require('@mgeist/libuv-monitor-linux-arm64')
+    } else if (process.platform == 'linux' && process.arch == 'x64') {
+        nativeBinding = require('@mgeist/libuv-monitor-linux-x64')
     }
 
     if (!nativeBinding) {
