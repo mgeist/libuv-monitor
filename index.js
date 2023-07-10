@@ -39,23 +39,40 @@ let target = getTargetString()
 // than this library supports without crashing.
 if (platformSupported()) {
     let nativeBinding = null
+    let error = null
 
     if (hasDevBinary()) {
         nativeBinding = require(devBinary())
     } else if (hasLocalBinary(target)) {
         nativeBinding = require(localBinary(target))
     } else if (process.platform == 'darwin' && process.arch == 'arm64') {
-        nativeBinding = require('@mgeist/libuv-monitor-darwin-arm64')
+        try {
+            nativeBinding = require('@mgeist/libuv-monitor-darwin-arm64')
+        } catch (e) {
+            error = e
+        }
     } else if (process.platform == 'darwin' && process.arch == 'x64') {
-        nativeBinding = require('@mgeist/libuv-monitor-darwin-x64')
+        try {
+            nativeBinding = require('@mgeist/libuv-monitor-darwin-x64')
+        } catch (e) {
+            error = e
+        }
     } else if (process.platform == 'linux' && process.arch == 'arm64') {
-        nativeBinding = require('@mgeist/libuv-monitor-linux-arm64')
+        try {
+            nativeBinding = require('@mgeist/libuv-monitor-linux-arm64')
+        } catch (e) {
+            error = e
+        }
     } else if (process.platform == 'linux' && process.arch == 'x64') {
-        nativeBinding = require('@mgeist/libuv-monitor-linux-x64')
+        try {
+            nativeBinding = require('@mgeist/libuv-monitor-linux-x64')
+        } catch (e) {
+            error = e
+        }
     }
 
     if (!nativeBinding) {
-        throw new Error("Failed to load binary")
+        throw new Error("Failed to load binary:", error)
     }
 
     module.exports.hi = nativeBinding.hi
