@@ -1,6 +1,6 @@
 {
     "name": "@mgeist/libuv-monitor-linux-arm64",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "os": [
         "linux"
     ],

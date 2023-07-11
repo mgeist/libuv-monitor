@@ -1,6 +1,6 @@
 {
   "name": "libuv-monitor",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "author": "",
   "license": "MIT",
@@ -20,9 +20,9 @@
     "test:ci": "node ./test.js"
   },
   "optionalDependencies": {
-      "@mgeist/libuv-monitor-darwin-arm64": "0.0.4",
-      "@mgeist/libuv-monitor-darwin-x64": "0.0.4",
-      "@mgeist/libuv-monitor-linux-x64": "0.0.4",
-      "@mgeist/libuv-monitor-linux-arm64": "0.0.4"
+      "@mgeist/libuv-monitor-darwin-arm64": "0.0.5",
+      "@mgeist/libuv-monitor-darwin-x64": "0.0.5",
+      "@mgeist/libuv-monitor-linux-x64": "0.0.5",
+      "@mgeist/libuv-monitor-linux-arm64": "0.0.5"
   }
 }
